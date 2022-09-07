@@ -8,6 +8,7 @@
 <script>
   import Vcode from "vue-puzzle-vcode";
   export default {
+    name: "TestPage",
     data() {
       return {
         isShow: false,
