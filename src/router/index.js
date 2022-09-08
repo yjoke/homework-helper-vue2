@@ -17,12 +17,17 @@ const routes = [{  // 根目录
   name: 'loginPage',
   hidden: true,
   component: () => import("@/components/LoginPage")
+}, {  // 登录进去的页面, 显示课程
+  path: '/home',
+  name: 'homePage',
+  hidden: true,
+  component: () => import("@/components/HomePage")
 }, {  // 404 页面
   path: '/:pathMarch(.*)',
   name: 'notFound',
   hidden: true,
   component: () => import("@/components/NotFound")
-}, ];
+}];
 
 const router = new Router({
   routes,
