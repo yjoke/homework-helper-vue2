@@ -1,4 +1,5 @@
 import axios from 'axios'
+import {MessageBox} from "element-ui"
 
 // 每次请求都是这样
 const service = axios.create({
@@ -24,7 +25,17 @@ service.interceptors.request.use(function(config) {
 // 添加响应拦截器
 service.interceptors.response.use(function(response) {
   // 对响应数据做什么
-  return response;
+  if (response.data.code === 0 && response.data.msg === 'notLogin') {
+    MessageBox.alert("请先登录", "登录失效", {
+      confirmButtonText: "跳转登录页面",
+      callback: () => {
+        window.location.href = "/"
+      }
+    }).then();
+    window.location.href = "/";
+  } else {
+    return response.data;
+  }
 }, function(error) {
   // 对响应错误做什么
   return Promise.reject(error);

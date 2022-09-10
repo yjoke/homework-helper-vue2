@@ -87,7 +87,7 @@
           </el-input>
           <el-button
               type=primary
-              @click="getCode"
+              @click="getCode('registerForm', 'phone')"
               :disabled="disable">{{ codeButton }}
           </el-button>
         </el-form-item>
@@ -219,21 +219,28 @@
         this.isRegister = false;
         this.dialogShowFlag = true;
       },
-      getCode() {
+      getCode(registerForm, phone) {
         // 打开验证码对应的框
-        this.buttonFlag = 4;
-        this.isShow = true;
+        console.log("into")
+        this.$refs[registerForm].validateField(phone, () => {
+          let match = this.rules.phone[1].pattern.test(this.registerForm.phone);
+          if (match) {
+            this.buttonFlag = 4;
+            this.isShow = true;
+          }
+        });
+        console.log("out")
       },
       loginCore() {
         this.service.post('login', this.form)
             .then((res) => {
-              // console.log(res);
-              if (res.data.code !== 1) {
+              console.log(res);
+              if (res.code !== 1) {
                 console.log("fail");
                 return;
               }
               console.log("success");
-              let token = res.data.data;
+              let token = res.data.Authorization;
               console.log("token: " + token);
               localStorage.setItem("Authorization", "Bearer " + token);
               this.$message.success("登录成功");
@@ -244,40 +251,27 @@
         this.service.post('register', this.registerForm)
             .then((res) => {
               console.log(res);
-              this.$message.success("注册成功");
+              if (res.code === 2) this.$message.success(res.msg);
+              else this.$message.error(res.msg);
               this.dialogShowFlag = false;
-            })
-            .catch((err) => {
-              console.log(err);
-              this.$message.success("注册失败, 请稍后重试");
             })
       },
       forgetPasswordCore() {
         this.service.post('forget', this.registerForm)
             .then((res) => {
               console.log(res);
-              this.$message.success("找回成功");
+              if (res.code === 2) this.$message.success(res.msg);
+              else this.$message.error(res.msg);
               this.dialogShowFlag = false;
-            })
-            .catch((err) => {
-              console.log(err);
-              this.$message.error("找回失败, 请稍后重试");
             })
       },
       getCodeCore() {
         // 验证通过后执行,
-        this.service.post('code', {})
+        this.service.post('code', this.registerForm)
             .then((res) => {
               console.log(res);
-              if (res.data.code === 1) {
-                this.$message.success('验证码发送成功, 请注意查收');
-              } else {
-                this.message.error("验证码发送失败, 请稍后重试");
-              }
-            })
-            .catch((err) => {
-              console.log(err);
-              this.message.error("验证码发送失败, 请稍后重试");
+              if (res.code === 2) this.$message.success(res.msg);
+              else this.$message.error(res.msg);
             })
         let timeout = setInterval(() => {
           if (this.count < 1) {
@@ -305,7 +299,7 @@
     height: 100%;
     min-width: 1000px;
     /*background-image: url("../assets/login-background.jpg");*/
-    background-image: url("https://api.btstu.cn/sjbz/api.php?lx=dongman&format=images");
+    background-image: url("https://api.btstu.cn/sjbz/api.php?lx=fengjing&format=images");
     background-size: 100% 100%;
     background-position: center center;
     overflow: auto;

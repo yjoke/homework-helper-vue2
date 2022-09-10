@@ -16,6 +16,13 @@ Vue.config.productionTip = false
 Vue.prototype.axios = axios
 Vue.prototype.service = service
 
+router.beforeEach((to, from, next) => {
+  if (to.name !== 'notFound'
+      && to.name !== 'loginPage'
+      && !localStorage.getItem("userInfo")) next({name: 'loginPage'})
+  else next()
+})
+
 new Vue({
   el: "#app",
   router,
