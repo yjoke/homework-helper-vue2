@@ -1,13 +1,11 @@
 <template>
-  <panda-men>
-    <div>在开发了, 在开发了</div>
-  </panda-men>
+  <panda-men>作业</panda-men>
 </template>
 
 <script>
   import PandaMen from "@/components/PandaMen";
   export default {
-    name: "HomePage",
+    name: "HomeworkInfo",
     components: {PandaMen}
   }
 </script>

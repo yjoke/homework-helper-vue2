@@ -1,34 +1,41 @@
 <template>
   <div>
-    <Vcode :show="isShow" @success="onSuccess" @close="onClose" />
-    <button @click="submit">开始验证</button>
+    <the-header :avatar="avatar">{{ username }}</the-header>
+    <el-container>
+      <the-aside/>
+
+      <el-main>
+        <div class="cont">
+          <router-view></router-view>
+        </div>
+      </el-main>
+<!--      <the-footer/>-->
+    </el-container>
   </div>
 </template>
 
 <script>
-  import Vcode from "vue-puzzle-vcode";
+  import TheHeader from "@/components/common/TheHeader";
+  import TheAside from "@/components/common/TheAside";
+
   export default {
     name: "TestPage",
     data() {
       return {
-        isShow: false,
+        username: "叁川故里",
+        avatar: "http://yjoker.work/resource/hdimg.jpg",
       };
     },
     components: {
-      Vcode,
+      TheAside,
+      TheHeader
+
     },
     methods: {
-      submit() {
-        this.isShow = true;
-      },
+    }
 
-      onSuccess() {
-        this.isShow = false; // 通过验证后，需要手动关闭模态框
-      },
-
-      onClose() {
-        this.isShow = false;
-      },
-    },
   };
 </script>
+
+<style scoped>
+</style>

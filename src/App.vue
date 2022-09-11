@@ -13,7 +13,4 @@ export default {
 
 <style>
   @import url('./assets/css/reset.css');
-  /*.fa {*/
-  /*  margin-left: 5px;*/
-  /*}*/
 </style>

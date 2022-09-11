@@ -19,7 +19,7 @@ Vue.prototype.service = service
 router.beforeEach((to, from, next) => {
   if (to.name !== 'notFound'
       && to.name !== 'loginPage'
-      && !localStorage.getItem("userInfo")) next({name: 'loginPage'})
+      && !localStorage.getItem('Authorization')) next({name: 'loginPage'})
   else next()
 })
 
