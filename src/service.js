@@ -5,7 +5,7 @@ import {MessageBox} from "element-ui"
 const service = axios.create({
   // 请求地址的公共前缀
   baseURL: "http://localhost:8080",
-  timeout: 3000,
+  timeout: 1000 * 120,
   headers: {
     'Content-type': 'application/json;charset=utf-8'
   },

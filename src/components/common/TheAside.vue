@@ -38,7 +38,7 @@
     },
     created() {
       // this.menus = this.$router.options.routes[3].children;
-      console.log(this.menus);
+      // console.log(this.menus);
     }
   }
 </script>

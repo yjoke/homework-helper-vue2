@@ -1,51 +1,53 @@
 <template>
   <div class="loginBody">
     <div class="loginData">
-      <div class="loginText">
-        <h2 class="title">石铁大作业帮</h2>
-      </div>
-
-      <div class="formData">
-        <el-form ref="form" :model="form" :rules="rules">
-          <el-form-item prop="phone">
-            <el-input
-                v-model="form.phone"
-                clearable
-                placeholder="请输入手机号">
-              <i slot="prefix" class="fa fa-mobile-phone" style="margin-left: 6px"/>
-            </el-input>
-          </el-form-item>
-          <el-form-item prop="password">
-            <el-input
-                v-model="form.password"
-                clearable
-                placeholder="请输入密码"
-                show-password>
-              <i slot="prefix" class="fa fa-key" style="margin-left: 6px"/>
-            </el-input>
-          </el-form-item>
-        </el-form>
-      </div>
-
-      <div class="tool">
-        <div><!--  @change="remember" -->
-          <el-checkbox v-model="checked">记住密码</el-checkbox>
+      <el-card>
+        <div class="loginText">
+          <h2 class="title">石铁大作业帮</h2>
         </div>
-        <div>
-          <span class="forgetPassword" @click="forgetPassword">忘记密码？</span>
-        </div>
-      </div>
 
-      <div class="button">
+        <div class="formData">
+          <el-form ref="form" :model="form" :rules="rules">
+            <el-form-item prop="phone">
+              <el-input
+                  v-model="form.phone"
+                  clearable
+                  placeholder="请输入手机号">
+                <i slot="prefix" class="fa fa-mobile-phone" style="margin-left: 6px"/>
+              </el-input>
+            </el-form-item>
+            <el-form-item prop="password">
+              <el-input
+                  v-model="form.password"
+                  clearable
+                  placeholder="请输入密码"
+                  show-password>
+                <i slot="prefix" class="fa fa-key" style="margin-left: 6px"/>
+              </el-input>
+            </el-form-item>
+          </el-form>
+        </div>
+
+        <div class="tool">
+          <div><!--  @change="remember" -->
+            <el-checkbox v-model="checked">记住密码</el-checkbox>
+          </div>
+          <div>
+            <el-link class="forgetPassword" @click="forgetPassword">忘记密码？</el-link>
+          </div>
+        </div>
+
+        <div class="button">
         <el-button type="primary" @click.native.prevent="login('form')">登录</el-button>
         <el-button class="register" @click="(dialogShowFlag = true) && (isRegister = true)">注册</el-button>
       </div>
+      </el-card>
     </div>
 
     <v-code :show="isShow" @success="onSuccess" @close="isShow = false"/>
 
     <el-dialog :title="isRegister ? '注册账号' : '忘记密码'" :visible.sync="dialogShowFlag"
-               :modal-append-to-body="false">
+               :modal-append-to-body="false" width="40%">
       <el-form ref="registerForm" :model="registerForm" :rules="rules">
         <el-form-item prop="phone" :label-width="formLabelWidth">
           <el-input
@@ -244,7 +246,7 @@
               console.log("token: " + token);
               localStorage.setItem("Authorization", "Bearer " + token);
               this.$message.success("登录成功");
-              this.$router.push('/home');
+              this.$router.push('/user-home');
             })
       },
       registerCore() {
@@ -291,15 +293,15 @@
 
 <style scoped>
   .title {
-    font-size: 45px;
+    font-size: 40px;
   }
 
   .loginBody {
     width: 100%;
     height: 100%;
     min-width: 1000px;
-    /*background-image: url("../assets/login-background.jpg");*/
-    background-image: url("https://api.btstu.cn/sjbz/api.php?lx=fengjing&format=images");
+    background-image: url("../assets/images/background/login-background.jpg");
+    /*background-image: url("https://api.btstu.cn/sjbz/api.php?lx=fengjing&format=images");*/
     background-size: 100% 100%;
     background-position: center center;
     overflow: auto;
