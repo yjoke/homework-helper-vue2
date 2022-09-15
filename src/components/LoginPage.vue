@@ -239,6 +239,7 @@
               console.log(res);
               if (res.code !== 1) {
                 console.log("fail");
+                this.$message.error(res.msg);
                 return;
               }
               console.log("success");
@@ -248,6 +249,7 @@
               this.$message.success("登录成功");
               this.$router.push('/user-home');
             })
+            .catch(() => {this.$message.error("网络异常")})
       },
       registerCore() {
         this.service.post('register', this.registerForm)

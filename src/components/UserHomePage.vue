@@ -128,7 +128,6 @@
         else this.dialogPerfectInfo = true;
       },
       uploadInfo(form) {
-        // TODO 上传
         console.log(this.form);
         this.$refs[form].validate(valid => {
           console.log(valid);
