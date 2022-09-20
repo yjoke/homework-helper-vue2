@@ -1,30 +1,98 @@
 <template>
-  <el-card>
-    <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="我学的课" name="first">
-        <div>
-          <el-button class="button" type="primary">添加课程</el-button>
-        </div>
-        <div>
-          <el-row :gutter="20">
-            <el-col :span="6">
-              <el-card>1</el-card>
-            </el-col>
-            <el-col :span="6">
-              <el-card>1</el-card>
-            </el-col>
-            <el-col :span="6">
-              <el-card>1</el-card>
-            </el-col>
-            <el-col :span="6">
-              <el-card>1</el-card>
-            </el-col>
-          </el-row>
-        </div>
-      </el-tab-pane>
-      <el-tab-pane label="我交的课" name="second">配置管理</el-tab-pane>
-    </el-tabs>
-  </el-card>
+  <div>
+    <el-card>
+      <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="我学的课" name="first">
+          <div>
+            <el-button class="button" type="primary">加入课程</el-button>
+          </div>
+          <div>
+            <el-row :gutter="20">
+              <el-col :span="6">
+                <el-card>1</el-card>
+              </el-col>
+              <el-col :span="6">
+                <el-card>1</el-card>
+              </el-col>
+              <el-col :span="6">
+                <el-card>1</el-card>
+              </el-col>
+              <el-col :span="6">
+                <el-card>1</el-card>
+              </el-col>
+            </el-row>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="我交的课" name="second">
+          <div>
+            <el-button class="button" type="primary"  @click="drawer = true">创建课程</el-button>
+          </div>
+
+          <div v-if="courses[0].id !== ''">
+            <div v-for="(item, index) in courses" :key="index" style="margin-bottom: 10px">
+              <el-row :gutter="20" v-if="index % 4 === 0">
+                <div v-for="(im, ix) in courses" :key="ix">
+                  <el-col :span="6" v-if="ix >= index && ix < index + 4">
+                    <el-card
+                        @click.native="skip(ix)"
+                        :body-style="{ padding: '0px' }"
+                        style="border-radius: 5%"
+                        shadow="hover">
+                      <el-image :src="im.courseImg" class="imgList"/>
+                      <div style="padding: 14px;">
+                        <span>{{ im.courseName }}</span>
+                      </div>
+                    </el-card>
+                  </el-col>
+                </div>
+              </el-row>
+            </div>
+          </div>
+          <div v-else>
+            <span>你没有创建过任何课程</span>
+          </div>
+
+
+        </el-tab-pane>
+      </el-tabs>
+    </el-card>
+
+    <el-drawer
+      title="创建课程"
+      :visible.sync="drawer">
+      <div>
+        <el-form @submit.native.prevent ref="form" :model="form" :rules="rules">
+          <el-form-item prop="courseName" label="课程名字" :label-width="formLabelWidth">
+            <el-input
+                v-model="form.courseName"
+                placeholder="请输入课程名称"
+                style="width: 78%"></el-input>
+          </el-form-item>
+          <el-form-item label="课程封面图" :label-width="formLabelWidth">
+            <el-upload
+                class="cover-uploader"
+                action="#"
+                :http-request="uploadCover"
+                accept="image/jpeg"
+                :show-file-list="false"
+                :multiple="false"
+                :before-upload="beforeCoverUpload">
+              <div v-if="form.courseImg">
+                <el-image :src="form.courseImg" class="cover"/>
+              </div>
+              <i v-else class="el-icon-plus cover-uploader-icon"></i>
+            </el-upload>
+          </el-form-item>
+          <el-button
+              style="margin-left: 10px;"
+              type="success"
+              @click="uploadCourseInfo('form')">创&nbsp;建</el-button>
+        </el-form>
+
+      </div>
+    </el-drawer>
+
+  </div>
 </template>
 
 <script>
@@ -33,14 +101,120 @@
     name: "CourseInfo",
     data() {
       return {
-        activeName: 'first'
+        activeName: 'second',
+
+        courses: [{
+          id: '',
+          courseImg: '',
+          courseName: '',
+        }],
+
+        drawer: false,
+        formLabelWidth: "100px",
+        form: {
+          courseName: '',
+          courseImg: '',
+        },
+        rules: {
+          courseName: [
+            {required: true, message: "请输入课程名称", trigger: "blur"},
+            {max: 16, message: "长度最大为 16", trigger: "blur"}
+          ]
+        }
+
+
       };
+    },
+    created() {
+      this.getCreated();
     },
     methods: {
       handleClick(tab, event) {
         console.log(tab, event);
-      }
-    }
+      },
+      uploadCover(file) {
+        console.log(file)
+        let cover = new FormData();
+        cover.append("cover", file.file);
+        this.service.post("/upload/cover", cover)
+            .then(res => {
+              console.log(res);
+              if (res.code === 1) {
+                this.form.courseImg = res.data.courseImg;
+                this.$message.success("上传成功");
+              } else this.$message.error(res.msg);
+            })
+            .catch(err => {
+              console.log(err)
+              this.$message.error(err.msg);
+            })
+
+      },
+      beforeCoverUpload(file) {
+        const isJPG = file.type === 'image/jpeg';
+        const isLt5M = file.size / 1024 / 1024 < 5;
+
+        if (!isJPG) {
+          this.$message.error('只能上传图片!');
+        }
+        if (!isLt5M) {
+          this.$message.error('上传封面图片大小不能超过 5MB!');
+        }
+        return isJPG && isLt5M;
+      },
+      uploadCourseInfo(form) {
+        console.log(form)
+        this.$refs[form].validate(valid => {
+          if (valid) {
+            this.service.post("/course", this.form)
+                .then(res => {
+                  console.log("uploadCourse", res);
+                  if (res.code === 1) {
+                    this.drawer = false;
+                    console.log("this1")
+                    let newCourse = {
+                      id: res.data.id,
+                      courseImg: this.form.courseImg,
+                      courseName: this.form.courseName,
+                    };
+                    console.log("this2")
+                    this.form = {
+                      courseName: '',
+                      courseImg: '',
+                    }
+                    console.log("this3")
+                    if (this.courses[0].id === '') this.courses = {};
+                    console.log("this4")
+                    this.courses.push(newCourse);
+                    console.log("this5")
+                    this.$message.success("创建成功");
+                  } else {
+                    this.$message.error(res.msg);
+                  }
+                }).catch(() => this.$message.error("网络异常"));
+          }
+        })
+      },
+      getCreated() {
+        this.service.get("/course/created")
+            .then(res => {
+              console.log(res);
+              if (res.code === 1) {
+                this.courses = res.data;
+              }
+            })
+      },
+      skip(ix) {
+        console.log(this.courses[ix].courseName)
+        let routerData = this.$router.resolve({
+          name: 'courseHomePage',
+          query: {
+            courseId: this.courses[ix].id
+          }
+        })
+        window.open(routerData.href, '_blank')
+      },
+    },
   }
 </script>
 
@@ -48,5 +222,35 @@
   .button {
     margin-top: 5px;
     margin-bottom: 15px;
+  }
+
+  .imgList {
+    width: 100%;
+    height: 150px;
+    display: block;
+    border-radius: 5%;
+  }
+
+  .cover-uploader {
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cover-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 192px;
+    height: 108px;
+    line-height: 108px;
+    text-align: center;
+  }
+
+  .cover {
+    width: 192px;
+    height: 108px;
+    display: block;
+    border-radius: 5%;
   }
 </style>

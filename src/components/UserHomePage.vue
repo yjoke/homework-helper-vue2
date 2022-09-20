@@ -132,7 +132,7 @@
         this.$refs[form].validate(valid => {
           console.log(valid);
           if (valid) {
-            this.service.post("/user/upload-info", this.form)
+            this.service.post("/user", this.form)
                 .then(res => {
                   console.log(res);
                   let message = this.$message.error;
@@ -158,6 +158,7 @@
               if (res.code === 1) {
                 this.src = res.data.avatar;
                 this.form.avatar = this.src;
+                this.$message.success(res.msg);
               } else this.$message.error(res.msg);
             })
             .catch(err => {
