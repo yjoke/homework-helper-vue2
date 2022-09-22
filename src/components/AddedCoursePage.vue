@@ -22,7 +22,7 @@
   import TheFooter from "@/components/common/TheFooter";
 
   export default {
-    name: "CourseHomePage",
+    name: "AddedCoursePage",
     data() {
       return {
         name: "叁川故里",

@@ -207,7 +207,7 @@
       skip(ix) {
         console.log(this.courses[ix].courseName)
         let routerData = this.$router.resolve({
-          name: 'courseHomePage',
+          name: 'createdCoursePage',
           query: {
             courseId: this.courses[ix].id
           }

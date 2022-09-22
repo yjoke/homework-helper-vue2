@@ -15,7 +15,9 @@
                  background-color="rgba(0,0,0,0)">
 
           <div v-for="(item, index) in menus" :key="index">
-            <el-menu-item :index="item.path">
+            <el-menu-item
+                :index="item.path"
+                :route="{name: item.name, query}">
               <i :class="item.iconClass" style="margin-left: 10px;"/>
               <span style="margin-left: 10px;">{{ item.viewName }}</span>
             </el-menu-item>
@@ -32,13 +34,13 @@
     props: ["menus", "tag"],
     data() {
       return {
-        // menus: [],
-        // tag: "叁川故里"
+        query: {},
       }
     },
     created() {
       // this.menus = this.$router.options.routes[3].children;
       // console.log(this.menus);
+      this.query = this.$route.query;
     }
   }
 </script>

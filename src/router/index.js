@@ -32,28 +32,58 @@ const routes = [{  // 根目录
     iconClass: 'fa fa-list',
     component: () => import("@/components/user/UserInfo")
   }]
-}, {
-  path: '/course-home',
-  name: 'courseHomePage',
-  redirect: '/course-home/homework',
-  component: () => import("@/components/CourseHomePage"),
+}, {  // 加入的课程
+  path: '/added-course',
+  name: 'addedCoursePage',
+  redirect: '/added-course/homework',
+  component: () => import("@/components/AddedCoursePage"),
   children: [{
-    path: '/course-home/homework',
-    name: 'homework',
+    path: '/added-course/homework',
+    name: 'homework-student',
     viewName: '作业',
     iconClass: 'fa fa-list',
-    component: () => import("@/components/course/HomeworkInfo")
+    component: () => import("@/components/course/added/HomeworkInfo")
   }, {
-    path: '/course-home/material',
-    name: 'material',
+    path: '/added-course/material',
+    name: 'material-student',
     viewName: '资料',
     iconClass: 'fa fa-list',
-    component: () => import("@/components/course/MaterialInfo")
+    component: () => import("@/components/course/added/MaterialInfo")
+  }]
+}, {  // 创建的课程
+  path: '/created-course',
+  name: 'createdCoursePage',
+  redirect: '/created-course/homework',
+  component: () => import("@/components/CreatedCoursePage"),
+  children: [{
+    path: '/created-course/homework',
+    name: 'homeworkTeacher',
+    viewName: '作业',
+    iconClass: 'fa fa-list',
+    component: () => import("@/components/course/created/HomeworkInfo")
+  }, {
+    path: '/created-course/material',
+    name: 'materialTeacher',
+    viewName: '资料',
+    iconClass: 'fa fa-list',
+    component: () => import("@/components/course/created/MaterialInfo")
+  }, {
+    path: '/created-course/student',
+    name: 'student',
+    viewName: '学生',
+    iconClass: 'fa fa-list',
+    component: () => import("@/components/course/created/StudentInfo")
+  }, {
+    path: '/created-course/course',
+    name: 'course',
+    viewName: '信息',
+    iconClass: 'fa fa-list',
+    component: () => import("@/components/course/created/CourseInfo")
   }]
 }, {  // 404 页面
-  path: '/:pathMarch(.*)',
-  name: 'notFound',
-  component: () => import("@/components/NotFound")
+    path: '/:pathMarch(.*)',
+    name: 'notFound',
+    component: () => import("@/components/NotFound")
 }];
 
 const router = new Router({
