@@ -171,22 +171,17 @@
                   console.log("uploadCourse", res);
                   if (res.code === 1) {
                     this.drawer = false;
-                    console.log("this1")
                     let newCourse = {
                       id: res.data.id,
                       courseImg: this.form.courseImg,
                       courseName: this.form.courseName,
                     };
-                    console.log("this2")
                     this.form = {
                       courseName: '',
                       courseImg: '',
                     }
-                    console.log("this3")
                     if (this.courses[0].id === '') this.courses = {};
-                    console.log("this4")
                     this.courses.push(newCourse);
-                    console.log("this5")
                     this.$message.success("创建成功");
                   } else {
                     this.$message.error(res.msg);
