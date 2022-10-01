@@ -252,7 +252,7 @@
           console.log(valid);
           if (valid) {
             if (JSON.stringify(this.form) !== JSON.stringify(this.userInfo)) {
-              this.service.post("/user/upload-info", this.form)
+              this.service.post("/user", this.form)
                   .then(res => {
                     console.log(res);
                     if (res.code === 2) {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <the-header :avatar="avatar">{{ name }}</the-header>
+    <the-header>{{ name }}</the-header>
     <el-container class="content">
       <the-aside :menus="this.$router.options.routes[5].children" :tag="name">
         <el-image class="image" :src="src"/>
@@ -31,9 +31,17 @@
     data() {
       return {
         name: "叁川故里",
-        avatar: "http://yjoker.work/resource/hdimg.jpg",
         src: require("../assets/images/background/login-background.jpg")
       };
+    },
+    created() {
+      let courseId = this.$route.query.courseId;
+      this.service.get("course/" + courseId)
+          .then(res => {
+            console.log(res);
+            this.src = res.data.courseImg;
+            this.name = res.data.courseName;
+          })
     },
   }
 </script>
