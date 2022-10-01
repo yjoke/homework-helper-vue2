@@ -169,6 +169,11 @@
           confirmButtonText: '确认',
           cancelButtonText: '取消',
           type: 'warning',
+        }).then(() => {
+          this.service.delete("course/" + this.courseId)
+              .then(res => {
+                this.$message.error(res.msg);
+              })
         })
       },
 
