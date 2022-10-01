@@ -4,25 +4,36 @@
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="我学的课" name="first">
           <div>
-            <el-button class="button" type="primary">加入课程</el-button>
+            <el-button class="button" type="primary" @click="addCourse">加入课程</el-button>
           </div>
-          <div>
-            <el-row :gutter="20">
-              <el-col :span="6">
-                <el-card>1</el-card>
-              </el-col>
-              <el-col :span="6">
-                <el-card>1</el-card>
-              </el-col>
-              <el-col :span="6">
-                <el-card>1</el-card>
-              </el-col>
-              <el-col :span="6">
-                <el-card>1</el-card>
-              </el-col>
-            </el-row>
+
+          <div v-if="addedCourses[0].id !== ''">
+            <div v-for="(item, index) in addedCourses" :key="index" style="margin-bottom: 10px">
+              <el-row :gutter="20" v-if="index % 4 === 0">
+                <div v-for="(im, ix) in addedCourses" :key="ix">
+                  <el-col :span="6" v-if="ix >= index && ix < index + 4">
+                    <el-card
+                        @click.native="skipAdded(ix)"
+                        :body-style="{ padding: '0px' }"
+                        style="border-radius: 5%"
+                        shadow="hover">
+                      <el-image :src="im.courseImg" class="imgList"/>
+                      <div style="padding: 14px;">
+                        <span>{{ im.courseName }}</span><br/>
+                        <span style="font-size: small; margin-top: 2px">{{ im.createUserName }}</span>
+                      </div>
+                    </el-card>
+                  </el-col>
+                </div>
+              </el-row>
+            </div>
           </div>
+          <div v-else>
+            <span>你没有创建过任何课程</span>
+          </div>
+
         </el-tab-pane>
+
         <el-tab-pane label="我交的课" name="second">
           <div>
             <el-button class="button" type="primary"  @click="drawer = true">创建课程</el-button>
@@ -34,7 +45,7 @@
                 <div v-for="(im, ix) in courses" :key="ix">
                   <el-col :span="6" v-if="ix >= index && ix < index + 4">
                     <el-card
-                        @click.native="skip(ix)"
+                        @click.native="skipCreated(ix)"
                         :body-style="{ padding: '0px' }"
                         style="border-radius: 5%"
                         shadow="hover">
@@ -92,6 +103,10 @@
       </div>
     </el-drawer>
 
+    <el-dialog>
+
+    </el-dialog>
+
   </div>
 </template>
 
@@ -101,7 +116,15 @@
     name: "CourseInfo",
     data() {
       return {
-        activeName: 'second',
+        activeName: 'first',
+        catchFlag: false,
+
+        addedCourses: [{
+          id: '',
+          courseImg: '',
+          courseName: '',
+          createUserName: '',
+        }],
 
         courses: [{
           id: '',
@@ -126,17 +149,41 @@
       };
     },
     created() {
-      this.getCreated();
+      this.getAdded();
     },
     methods: {
-      handleClick(tab, event) {
-        console.log(tab, event);
+      handleClick(tab) {
+        console.log("tab: ", tab);
+        console.log(tab.index)
+        if (!this.catchFlag && tab.index === '1') {
+          this.getCreated();
+          this.catchFlag = true;
+        }
+
+      },
+      getAdded() {
+        this.service.get("course/added")
+            .then(res => {
+              console.log(res.msg);
+              if (res.code === 1) {
+                if (res.data.length !== 0) this.addedCourses = res.data;
+              }
+            })
+      },
+      getCreated() {
+        this.service.get("course/created")
+            .then(res => {
+              console.log(res);
+              if (res.code === 1) {
+                if (res.data.length !== 0) this.courses = res.data;
+              }
+            })
       },
       uploadCover(file) {
         console.log(file)
         let cover = new FormData();
         cover.append("cover", file.file);
-        this.service.post("/upload/cover", cover)
+        this.service.post("upload/cover", cover)
             .then(res => {
               console.log(res);
               if (res.code === 1) {
@@ -166,7 +213,7 @@
         console.log(form)
         this.$refs[form].validate(valid => {
           if (valid) {
-            this.service.post("/course", this.form)
+            this.service.post("/course/created", this.form)
                 .then(res => {
                   console.log("uploadCourse", res);
                   if (res.code === 1) {
@@ -180,7 +227,7 @@
                       courseName: '',
                       courseImg: '',
                     }
-                    if (this.courses[0].id === '') this.courses = {};
+                    if (this.courses[0].id === '') this.courses = [];
                     this.courses.push(newCourse);
                     this.$message.success("创建成功");
                   } else {
@@ -190,16 +237,38 @@
           }
         })
       },
-      getCreated() {
-        this.service.get("/course/created")
-            .then(res => {
-              console.log(res);
-              if (res.code === 1) {
-                this.courses = res.data;
-              }
-            })
+      addCourse() {
+        this.$prompt('请输入邀请码', '添加课程', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+        })
+        .then(({value}) => {
+          this.service.post("course/added/" + value)
+              .then(res => {
+                console.log(res);
+                if (res.code !== 1) {
+                  this.$message.error(res.msg);
+                  return ;
+                }
+
+                if (this.addedCourses[0].id === '') this.addedCourses = [];
+                this.addedCourses.push(res.data);
+                this.$message.success("创建成功");
+              })
+        })
       },
-      skip(ix) {
+
+      skipAdded(ix) {
+        console.log(this.addedCourses[ix].courseName)
+        let routerData = this.$router.resolve({
+          name: 'addedCoursePage',
+          query: {
+            courseId: this.addedCourses[ix].id
+          }
+        })
+        window.open(routerData.href, '_blank')
+      },
+      skipCreated(ix) {
         console.log(this.courses[ix].courseName)
         let routerData = this.$router.resolve({
           name: 'createdCoursePage',

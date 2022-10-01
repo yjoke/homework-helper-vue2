@@ -30,8 +30,8 @@
     },
     data() {
       return {
-        name: "叁川故里",
-        src: require("../assets/images/background/login-background.jpg")
+        name: "",
+        src: ''
       };
     },
     created() {
