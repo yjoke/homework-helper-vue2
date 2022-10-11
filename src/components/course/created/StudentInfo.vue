@@ -1,5 +1,6 @@
 <template>
   <el-card>
+    <el-button type="primary">新增学生</el-button>
     <el-table :data="studentList" style="width: 100%">
       <el-table-column label="头像"></el-table-column>
       <el-table-column prop="clazz" label="班级"></el-table-column>
