@@ -1,5 +1,4 @@
 import axios from 'axios'
-import {MessageBox} from "element-ui"
 
 // 每次请求都是这样
 const service = axios.create({
@@ -26,13 +25,8 @@ service.interceptors.request.use(function(config) {
 service.interceptors.response.use(function(response) {
   // 对响应数据做什么
   if (response.data.code === 0 && response.data.msg === 'notLogin') {
-    MessageBox.alert("请先登录", "登录失效", {
-      confirmButtonText: "跳转登录页面",
-      callback: () => {
-        window.location.href = "/"
-      }
-    }).then();
-    window.location.href = "/";
+    localStorage.removeItem("Authorization");
+    window.location.href = "/login/?reLogin=1";
   } else {
     return response.data;
   }

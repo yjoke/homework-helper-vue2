@@ -249,7 +249,7 @@
 
                 if (this.addedCourses[0].id === '') this.addedCourses = [];
                 this.addedCourses.push(res.data);
-                this.$message.success("创建成功");
+                this.$message.success("加入成功");
               })
         })
       },
