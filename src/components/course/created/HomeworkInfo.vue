@@ -118,11 +118,8 @@
 </template>
 
 <script>
-
-  import PandaMen from "@/components/PandaMen";
   export default {
     name: "HomeworkInfo",
-    components: {PandaMen},
     data() {
       return {
         courseId: '',
