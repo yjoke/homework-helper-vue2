@@ -167,10 +167,19 @@
       };
     },
     mounted() {
+      // 启动是查看是否已经登录
+      if (localStorage.getItem("Authorization")) {
+        this.$message.success("自动登录");
+        this.$router.push('/user-home');
+        return ;
+      }
       // 启动时查看是否保存密码
       if (localStorage.getItem("auto-memory-key")) {
         this.form = JSON.parse(localStorage.getItem("auto-memory-key"))
         this.checked = true
+      }
+      if (this.$route.query.reLogin) {
+        this.$message.error("登录过期");
       }
     },
     methods: {
